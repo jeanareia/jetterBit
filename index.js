@@ -1,11 +1,10 @@
 const express = require("express");
+const orderRoutes = require("./routes/orderRoutes");
 
 const app = express();
 const PORT = 3000;
 
-app.get("/", (req, res) => {
-    res.send("First commit");
-});
+app.use("/order", orderRoutes);
 
 app.listen(PORT, () => {
     console.log(`OrderSystem server running on port: ${PORT}`);

@@ -3,8 +3,15 @@ const {ObjStatus} = require('@prisma/client')
 
 class OrderRepository{
 
+    /**
+     * Saves a given Order object on DB
+     * @param {*} order - Order object
+     * @param {*} tx - Prisma transaction
+     * @returns 
+     */
     async createNewOrder(order, tx=prisma){
         return await tx.order.create({
+            //1 - Convert the Order object into Prisma structure
             data: orderToPrismaData(order)
         });
     }
@@ -37,6 +44,11 @@ class OrderRepository{
     }
 }
 
+/**
+ * Converts a given Order object into the Prisma structure
+ * @param {*} order - order object
+ * @returns - Prisma structure
+ */
 function orderToPrismaData(order){
     return {
         orderId: order.orderId,

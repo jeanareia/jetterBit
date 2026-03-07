@@ -1,9 +1,17 @@
+const createOrderDto = require('../dto/createOrderDto');
 const orderService = require('../services/orderService')
 
 class OrderControlle{
     
     async createNewOrder(req, res) {
-        res.send("createNewOrder");
+        const dto = createOrderDto.parse(req.body);
+        try{
+            const order = await orderService.createNewOrder(dto);
+            return res.status(201).json(order);
+        }
+        catch(error){
+            return res.status(500).json({message: error.message});
+        }
     }
     
     async getOrderById(req, res) {

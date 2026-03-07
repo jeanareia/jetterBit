@@ -1,8 +1,11 @@
+const Item = require('./Item')
+
 export default class Order{
-    constructor(orderId, value, creationDate, status){
+    constructor({id, orderId, value, creationDate, items}){
+        this.id = id;
         this.orderId = orderId;
         this.value = value;
         this.creationDate = creationDate;
-        this.status = status;
+        this.items = (items || []).map(item=> new Item(item));
     }
 }

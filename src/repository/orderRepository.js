@@ -3,15 +3,16 @@ const {ObjStatus} = require('@prisma/client')
 
 class OrderRepository{
 
-    async createNewOrder(order){
-        return await prisma.order.create({
-            data: order
+    async createNewOrder(order, tx=prisma){
+        return await tx.order.create({
+            data: orderToPrismaData(order)
         });
     }
 
     async getOrderById(orderId){
         return await prisma.order.findUnique({
-            where: {orderId:orderId, status: ObjStatus.ACTIVE}
+            where: {orderId:orderId, status: ObjStatus.ACTIVE},
+            include: {items: true}
         });
     }
 
@@ -21,17 +22,25 @@ class OrderRepository{
         });
     }
 
-    async updateOrderById(orderId, order){
-        return await prisma.order.update({
+    async updateOrderById(orderId, order, tx=prisma){
+        return await tx.order.update({
             where: {orderId: orderId},
-            data: order
+            data: orderToPrismaData(order)
         })
     }
 
-    async deleteOrderById(orderId){
-        return await prisma.order.update({
+    async deleteOrderById(orderId, tx=prisma){
+        return await tx.order.update({
             where: {orderId: orderId},
             data:{status: ObjStatus.INACTIVE}
         })
     }
+}
+
+function orderToPrismaData(order){
+    return {
+        orderId: order.orderId,
+        value: order.value,
+        creationDate: order.creationDate
+    };
 }

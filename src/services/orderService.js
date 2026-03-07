@@ -1,9 +1,20 @@
-const orderRepository = require('../repository/orderRepository')
+const orderRepository = require('../repository/orderRepository');
+const itemService = require('./itemService');
 
 class OrderService{
 
-    async createNewOrder(order) {
-        return await orderRepository.createNewOrder(order);
+    async createNewOrder(dto) {
+        const order = new Order(dto);
+        try{
+            return await prisma.$transaction(async (tx) => {
+                const orderDb = await orderRepository.createNewOrder(order);
+                await itemService.createNewItem(order.items, orderDb.id, tx);
+                return orderDb;
+            });
+        }
+        catch(error){
+            throw new Error(`Something went wrong during creating order. Error: ${error.message}`);
+        }
     }
 
     async getOrderById(orderId){

@@ -1,0 +1,9 @@
+-- CreateTable
+CREATE TABLE `orders` (
+    `orderId` INTEGER NOT NULL AUTO_INCREMENT,
+    `value` DOUBLE NOT NULL,
+    `creationDate` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `status` VARCHAR(191) NOT NULL DEFAULT 'ACTIVE',
+
+    PRIMARY KEY (`orderId`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

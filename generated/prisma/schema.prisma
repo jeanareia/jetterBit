@@ -21,7 +21,7 @@ enum ObjStatus {
 
 model Order {
   id           Int       @id @default(autoincrement())
-  orderId      String
+  orderId      String    @unique
   value        Float
   creationDate DateTime  @default(now())
   status       ObjStatus @default(ACTIVE)

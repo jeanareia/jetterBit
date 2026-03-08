@@ -24,12 +24,18 @@ class OrderService{
             return await orderRepository.createNewOrderWithItems(order, order.items);
         }
         catch(error){
-            //7 - In case of any issues during DB transaction
+            //3 - In case of any issues during DB transaction
             throw new Error(`Something went wrong during creating order. Error: ${error.message}`);
         }
     }
 
+    /**
+     * Retrieves a specific Order and its Items based on the Order Id
+     * @param {*} orderId - The order id to search for
+     * @returns - JSON format Order object
+     */
     async getOrderById(orderId){
+        console.log("Retrieving Order for ID: " + orderId);
         return await orderRepository.getOrderById(orderId);
     }
 

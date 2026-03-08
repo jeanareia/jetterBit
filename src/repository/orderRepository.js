@@ -20,7 +20,7 @@ class OrderRepository{
             //Yes --> Save them on DB
             //No ---> Just return the STEP 2 order
             if(items && items.length > 0){
-                //5 - Using item paramether and STEP 2 Order ID (DB ID) save each item on DB
+                //4 - Using item paramether and STEP 2 Order ID (DB ID) save each item on DB
                 //STEP 2 wont return any item. And until this point this Order have no Items
                 await itemRepository.createNewItem(items, orderDb.id, tx);
             }
@@ -41,9 +41,16 @@ class OrderRepository{
         });
     }
 
+    /**
+     * Retrieves from DB a active specific Order and its Items based on the Order ID
+     * @param {*} orderId - Order Id to search for
+     * @returns - Order object
+     */
     async getOrderById(orderId){
         return await prisma.order.findUnique({
+            //Where OrderId = searching value AND status = ACTIVE
             where: {orderId:orderId, status: ObjStatus.ACTIVE},
+            //Load all its items
             include: {items: true}
         });
     }

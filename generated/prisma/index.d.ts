@@ -3090,15 +3090,15 @@ export namespace Prisma {
 
   export type OrderWhereUniqueInput = Prisma.AtLeast<{
     id?: number
+    orderId?: string
     AND?: OrderWhereInput | OrderWhereInput[]
     OR?: OrderWhereInput[]
     NOT?: OrderWhereInput | OrderWhereInput[]
-    orderId?: StringFilter<"Order"> | string
     value?: FloatFilter<"Order"> | number
     creationDate?: DateTimeFilter<"Order"> | Date | string
     status?: EnumObjStatusFilter<"Order"> | $Enums.ObjStatus
     items?: ItemListRelationFilter
-  }, "id">
+  }, "id" | "orderId">
 
   export type OrderOrderByWithAggregationInput = {
     id?: SortOrder

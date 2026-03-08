@@ -1,0 +1,19 @@
+const mysql = require("mysql2");
+
+const connection = mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "6654",
+    database: "jitterbit"
+});
+
+connection.connect((err) => {
+    if (err) {
+        console.error("Something went wrong while connecting to MySQL server. Error:", err);
+        return;
+    }
+
+    console.log("Successfully connected to the MySQL server.");
+});
+
+module.exports = connection;

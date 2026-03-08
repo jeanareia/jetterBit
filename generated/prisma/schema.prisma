@@ -5,10 +5,41 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
-  output   = "../generated/prisma"
+  provider   = "prisma-client-js"
+  output     = "../generated/prisma"
+  engineType = "library"
 }
 
 datasource db {
   provider = "mysql"
+}
+
+enum ObjStatus {
+  ACTIVE
+  INACTIVE
+}
+
+model Order {
+  id           Int       @id @default(autoincrement())
+  orderId      String
+  value        Float
+  creationDate DateTime  @default(now())
+  status       ObjStatus @default(ACTIVE)
+
+  items Item[]
+
+  @@map("orders")
+}
+
+model Item {
+  id        Int       @id @default(autoincrement())
+  productId Int
+  quantity  Int
+  price     Float
+  status    ObjStatus @default(ACTIVE)
+
+  orderId Int
+  order   Order @relation(fields: [orderId], references: [id])
+
+  @@map("items")
 }

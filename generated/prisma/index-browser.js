@@ -120,9 +120,39 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
+exports.Prisma.OrderScalarFieldEnum = {
+  id: 'id',
+  orderId: 'orderId',
+  value: 'value',
+  creationDate: 'creationDate',
+  status: 'status'
+};
+
+exports.Prisma.ItemScalarFieldEnum = {
+  id: 'id',
+  productId: 'productId',
+  quantity: 'quantity',
+  price: 'price',
+  status: 'status',
+  orderId: 'orderId'
+};
+
+exports.Prisma.SortOrder = {
+  asc: 'asc',
+  desc: 'desc'
+};
+
+exports.Prisma.OrderOrderByRelevanceFieldEnum = {
+  orderId: 'orderId'
+};
+exports.ObjStatus = exports.$Enums.ObjStatus = {
+  ACTIVE: 'ACTIVE',
+  INACTIVE: 'INACTIVE'
+};
 
 exports.Prisma.ModelName = {
-
+  Order: 'Order',
+  Item: 'Item'
 };
 
 /**

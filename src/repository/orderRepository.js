@@ -1,5 +1,5 @@
 const prisma = require('../database/prismaClient');
-const {ObjStatus} = require('@prisma/client')
+const {ObjStatus} = require('../../generated/prisma')
 
 class OrderRepository{
 

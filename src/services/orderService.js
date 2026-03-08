@@ -10,7 +10,9 @@ class OrderService{
      */
     async createNewOrder(dto) {
         //1 - Using the JSON, created a new Order object
+        console.log("DTO --> " + order);
         const order = new Order(dto);
+        console.log("ORDER --> " + order);
         try{
             //2 - Begin the transaction proccess
             //Ensuring that the Order object wont be created unless all its items got created too

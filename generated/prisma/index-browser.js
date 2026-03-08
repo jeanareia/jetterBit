@@ -137,6 +137,13 @@ exports.Prisma.ItemScalarFieldEnum = {
   orderId: 'orderId'
 };
 
+exports.Prisma.UserScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  password: 'password',
+  status: 'status'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -145,6 +152,11 @@ exports.Prisma.SortOrder = {
 exports.Prisma.OrderOrderByRelevanceFieldEnum = {
   orderId: 'orderId'
 };
+
+exports.Prisma.UserOrderByRelevanceFieldEnum = {
+  email: 'email',
+  password: 'password'
+};
 exports.ObjStatus = exports.$Enums.ObjStatus = {
   ACTIVE: 'ACTIVE',
   INACTIVE: 'INACTIVE'
@@ -152,7 +164,8 @@ exports.ObjStatus = exports.$Enums.ObjStatus = {
 
 exports.Prisma.ModelName = {
   Order: 'Order',
-  Item: 'Item'
+  Item: 'Item',
+  User: 'User'
 };
 
 /**

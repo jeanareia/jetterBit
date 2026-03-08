@@ -125,6 +125,24 @@ class OrderRepository{
     }
 
     /**
+     * Sets a specific Order ans its items status as Inactive based on its OrderId
+     * @param {number} orderId - OrderId to be updated
+     * @param {Object} items - Its item list
+     * @returns - Order
+     */
+    async deleteOrderWithItemsById(orderId, items){
+        return await prisma.$transaction(async (tx) => {
+            //1 - Delete the Order object
+            const orderDb = await this.deleteOrderById(orderId, tx);
+            //2 - Is there any Item on this Order?
+            //yes ---> delete them
+            //no ----> Just return STEP 1 Order
+            await itemService.deleteItemsBatch(orderDb.id, tx);
+            return orderDb;
+        });
+    }
+
+    /**
      * Set a Order status as INACTIVE
      * @param {number} orderId - OrderId to search for
      * @param {Object} tx - Prisma connection

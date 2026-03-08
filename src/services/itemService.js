@@ -46,6 +46,15 @@ class ItemService{
             }
         }
     }
+
+    /**
+     * Set a batch of Items status as INACTIVE
+     * @param {number} orderId 
+     * @param {Object} tx 
+     */
+    async deleteItemsBatch(orderId, tx){
+        await itemRepository.deleteItemsByOrderId(orderId, tx);
+    }
 }
 
 module.exports = new ItemService();

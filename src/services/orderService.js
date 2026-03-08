@@ -46,8 +46,13 @@ class OrderService{
         return await orderRepository.updateOrderWithItemsById(orderId, order, order.items);
     }
 
+    /**
+     * Sets a specific Order ans its items status as Inactive based on its OrderId
+     * @param {number} orderId 
+     * @returns - Order object
+     */
     async deleteOrderById(orderId){
-        return await orderRepository.deleteOrderById(orderId);
+        return await orderRepository.deleteOrderWithItemsById(orderId);
     }
 }
 

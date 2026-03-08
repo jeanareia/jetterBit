@@ -91,8 +91,24 @@ class OrderControlle{
         }
     }
     
+    /**
+     * Sets a specific Order status as Inactive based on its OrderId
+     * @param {Object} req - HTTP request information (body needed)
+     * @param {Object} res - Response
+     * @returns - HTTP status code + Order properties in case of success
+     */
     async deleteOrderById(req, res) {
-        res.send("deleteOrderById");
+        try{
+            //1 - Retrieves the orderId
+            const {orderId} = req.params;
+            //2 - Set its status and its items status as INACTIVE
+            const order = await orderService.deleteOrderById(orderId);
+            return res.status(200).json(order);
+        }
+        catch(error){
+            //4 - Return 500 for any issue
+            return res.status(500).json({message: error.message});
+        }
     }
 
 }

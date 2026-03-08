@@ -58,14 +58,14 @@ class ItemRepository{
     }
 
     /**
-     * Set a given Item status as INACTIVE
+     * Set a batch of Item status as INACTIVE
      * @param {number} itemId - the item id to be deactivated
      * @param {Object} tx - Prisma connection
      * @returns - deactivated Item
      */
-    async deleteItem(itemId, tx=prisma){
-        return await tx.item.update({
-            where: {id: itemId},
+    async deleteItemsByOrderId(orderId, tx=prisma){
+        return await tx.item.updateMany({
+            where: {orderId: orderId},
             data:{status: ObjStatus.INACTIVE}
         })
     }

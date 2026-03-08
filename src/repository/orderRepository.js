@@ -1,7 +1,32 @@
 const prisma = require('../database/prismaClient');
-const {ObjStatus} = require('../../generated/prisma')
+const {ObjStatus} = require('../../generated/prisma');
+const itemRepository = require("./itemRepository");
 
 class OrderRepository{
+
+    /**
+     * Saves the order and its items on DB
+     * @param {*} order - The given order to be saved
+     * @param {*} items - Its items
+     * @returns - Order object already saved
+     */
+    async createNewOrderWithItems(order, items){
+        //1 - Begin the transaction proccess
+        //Ensuring that the Order object wont be created unless all its items got created too
+        return await prisma.$transaction(async (tx) => {
+            //2 - Using this function Order paramether save it on DB
+            const orderDb = await this.createNewOrder(order, tx);
+            //3 - Does this order have any Item?
+            //Yes --> Save them on DB
+            //No ---> Just return the STEP 2 order
+            if(items && items.length > 0){
+                //5 - Using item paramether and STEP 2 Order ID (DB ID) save each item on DB
+                //STEP 2 wont return any item. And until this point this Order have no Items
+                await itemRepository.createNewItem(items, orderDb.id, tx);
+            }
+            return orderDb;
+        });
+    }
 
     /**
      * Saves a given Order object on DB
@@ -56,3 +81,5 @@ function orderToPrismaData(order){
         creationDate: order.creationDate
     };
 }
+
+module.exports = new OrderRepository();

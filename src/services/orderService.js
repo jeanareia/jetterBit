@@ -1,6 +1,6 @@
 const orderRepository = require('../repository/orderRepository');
 const itemService = require('./itemService');
-
+const Order = require('../models/Order');
 class OrderService{
 
     /**
@@ -10,26 +10,18 @@ class OrderService{
      */
     async createNewOrder(dto) {
         //1 - Using the JSON, created a new Order object
-        console.log("DTO --> " + order);
+        console.log("DTO --> " + dto.orderId + " // " + dto.value + " //" + dto.creationDate + " // ");
+        if(dto.items.length > 0 ){
+            for (let index = 0; index < dto.items.length; index++) {
+                const element = dto.items[index];
+                console.log(element)
+            }
+        }
         const order = new Order(dto);
         console.log("ORDER --> " + order);
         try{
-            //2 - Begin the transaction proccess
-            //Ensuring that the Order object wont be created unless all its items got created too
-            return await prisma.$transaction(async (tx) => {
-                //3 - Using STEP 1 object, save it on DB
-                const orderDb = await orderRepository.createNewOrder(order);
-                //4 - Does this order have any Item?
-                //Yes --> Save them on DB
-                //No ---> Just return the STEP 3 order
-                if(order.items || order.items.length > 0){
-                    //5 - Using STEP 1 item list and STEP 3 Order ID (DB ID) save each item on DB
-                    //STEP 3 wont return any item. And until this point this Order have no Items
-                    await itemService.createNewItem(order.items, orderDb.id, tx);
-                }
-                //6 - Success
-                return orderDb;
-            });
+            //2 - Saves this Order and its items on DB
+            return await orderRepository.createNewOrderWithItems(order, order.items);
         }
         catch(error){
             //7 - In case of any issues during DB transaction

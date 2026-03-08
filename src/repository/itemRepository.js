@@ -50,3 +50,5 @@ function itemToPrismaData(items, orderId){
         price: item.price
     }))
 }
+
+module.exports = new ItemRepository();

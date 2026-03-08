@@ -3,20 +3,33 @@ const {ObjStatus} = require('../../generated/prisma')
 
 class ItemRepository{
 
+    /**
+     * Saves a Item object on DB
+     * @param {Object} items - item to be saved
+     * @param {number} orderId - the Order from where this item belongs to
+     * @param {Object} tx - Prisma connection
+     * @returns - item object
+     */
     async createNewItem(items, orderId, tx=prisma){
         return await tx.item.createMany({
             data: itemToPrismaData(items, orderId)
         });
     }
 
-    async getItemByProductId(productId){
+    async getItemsByProductId(productId){
         return await prisma.item.findUnique({
             where: {productId:productId, status: ObjStatus.ACTIVE}
         });
     }
 
-    async getItemByOrderId(orderId){
-        return await prisma.item.findUnique({
+    /**
+     * Retrieves all ACTIVE items for a given Order Id
+     * @param {number} orderId - Order Id to seearch for
+     * @param {Object} tx - Prisma connectrio
+     * @returns - Item list
+     */
+    async getItemsByOrderId(orderId, tx=prisma){
+        return await tx.item.findMany({
             where: {orderId:orderId, status: ObjStatus.ACTIVE}
         });
     }
@@ -27,16 +40,32 @@ class ItemRepository{
         });
     }
 
-    async updateItemByProductId(productId, item, tx=prisma){
+    /**
+     * Update an Item object
+     * @param {number} itemId - orderId from where this item belongs to
+     * @param {Object} item - item new properties
+     * @param {Object} tx - Prisma connection
+     * @returns - Item object
+     */
+    async updateItem(itemId, item, tx=prisma){
         return await tx.item.update({
-            where: {productId: productId},
-            data: itemToPrismaData(item)
+            where: {id: itemId},
+            data: {
+                quantity: item.quantity,
+                price: item.price
+            }
         })
     }
 
-    async deleteItemByProductId(productId, tx=prisma){
+    /**
+     * Set a given Item status as INACTIVE
+     * @param {number} itemId - the item id to be deactivated
+     * @param {Object} tx - Prisma connection
+     * @returns - deactivated Item
+     */
+    async deleteItem(itemId, tx=prisma){
         return await tx.item.update({
-            where: {productId: productId},
+            where: {id: itemId},
             data:{status: ObjStatus.INACTIVE}
         })
     }

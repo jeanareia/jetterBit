@@ -1,4 +1,5 @@
 const createOrderDto = require('../dto/createOrderDto');
+const updateOrderDto = require('../dto/updateOrderDto');
 const orderService = require('../services/orderService')
 
 class OrderControlle{
@@ -10,9 +11,9 @@ class OrderControlle{
      * @returns - HTTP status code + Order properties in case of success
      */
     async createNewOrder(req, res) {
-        //1 - Transform the given JSON into a DTO
-        const dto = createOrderDto.parse(req.body);
         try{
+            //1 - Transform the given JSON into a DTO
+            const dto = createOrderDto.parse(req.body);
             //2 - Using STEP 1 DTO instatiate the Order+Item objects and save them all on DB
             const order = await orderService.createNewOrder(dto);
             //3 - Return OK + Order+Item properties
@@ -56,7 +57,6 @@ class OrderControlle{
      * @returns - HTTP status code + Order List
      */
     async getAllOrders(req, res) {
-        console.log("Retrieving all Active orders");
         try{
             //1 - Wich page to look for?
             const page = parseInt(req.query.page) || 1;
@@ -72,8 +72,18 @@ class OrderControlle{
         }
     }
     
+
     async updateOrderById(req, res) {
-        res.send("UpdateOrderById");
+        try{
+            const {orderId} = req.params;
+            const dto = updateOrderDto.parte(req.body);
+            const order = await orderService.updateOrderById(orderId, dto);
+            return res.status(200).json(order);
+        }
+        catch(error){
+            //4 - Return 500 for any issue
+            return res.status(500).json({message: error.message});
+        }
     }
     
     async deleteOrderById(req, res) {

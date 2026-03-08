@@ -41,8 +41,9 @@ class OrderService{
         return await orderRepository.getAllOrders(page, pageSize);
     }
 
-    async updateOrderById(orderId, order){
-        return await orderRepository.updateOrderById(orderId, order);
+    async updateOrderById(orderId, dto){
+        const order = new Order(dto);
+        return await orderRepository.updateOrderWithItemsById(orderId, order, order.items);
     }
 
     async deleteOrderById(orderId){

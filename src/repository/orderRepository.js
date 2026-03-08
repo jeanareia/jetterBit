@@ -1,6 +1,8 @@
 const prisma = require('../database/prismaClient');
 const {ObjStatus} = require('../../generated/prisma');
 const itemRepository = require("./itemRepository");
+const itemService = require('../services/itemService')
+
 
 class OrderRepository{
 
@@ -87,6 +89,27 @@ class OrderRepository{
         }
     }
 
+    /**
+     * Updates a specific Order on DB based on its ID
+     * @param {number} orderId - Order id to be updated
+     * @param {Object} order - new property values to be set
+     * @param {Object} items - new items to be set
+     * @returns - Updated Order object
+     */
+    async updateOrderWithItemsById(orderId, order, items){
+        return await prisma.$transaction(async (tx) => {
+            //1 - Update the Order object
+            const orderDb = await this.updateOrderById(orderId, order, tx);
+            //2 - Is there any Item on this Order?
+            //yes ---> update them
+            //no ----> Just return STEP 1 Order
+            if(items && items.length>0){
+                await itemService.updateItemsBatch(orderId, items, tx);
+            }
+            return orderDb;
+        });
+    }
+
     async updateOrderById(orderId, order, tx=prisma){
         return await tx.order.update({
             where: {orderId: orderId},
@@ -104,7 +127,7 @@ class OrderRepository{
 
 /**
  * Converts a given Order object into the Prisma structure
- * @param {*} order - order object
+ * @param {Object} order - order object
  * @returns - Prisma structure
  */
 function orderToPrismaData(order){

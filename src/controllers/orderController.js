@@ -5,8 +5,8 @@ class OrderControlle{
     
     /**
      * Creates a new Order and its Items
-     * @param {*} req - HTTP request information (body needed)
-     * @param {*} res - Response
+     * @param {Object} req - HTTP request information (body needed)
+     * @param {Object} res - Response
      * @returns - HTTP status code + Order properties in case of success
      */
     async createNewOrder(req, res) {
@@ -26,14 +26,19 @@ class OrderControlle{
     
     /**
      * Retrieves a specific ACTIVE Order and its Items based on the order id
-     * @param {*} req - HTTP requestio information (body needed)
-     * @param {*} res - Response
+     * @param {Object} req - HTTP request information (body needed)
+     * @param {Object} res - Response
      * @returns - HTTP status code + Order properties in case of success
      */
     async getOrderById(req, res) {
         try{
+            //1 - Retrieves the orderId from request paramaethers
             const {orderId} = req.params;
+            //2 - Retrieves the order object from DB using STEP 1 orderId
             const order = await orderService.getOrderById(orderId);
+            //3 - Is there any matching order?
+            //Yes --> Return it
+            //No ---> 404 Error
             if(order == null){
                 return res.status(404).json({message: "Order not found"});
             }
@@ -44,8 +49,27 @@ class OrderControlle{
         }
     }
     
+    /**
+     * Retrieves all ACTIVE orders from DB
+     * @param {Object} req - HTTP request information
+     * @param {Object} res - Response
+     * @returns - HTTP status code + Order List
+     */
     async getAllOrders(req, res) {
-        res.send("getAllOrders");
+        console.log("Retrieving all Active orders");
+        try{
+            //1 - Wich page to look for?
+            const page = parseInt(req.query.page) || 1;
+            //2 - How many items per page?
+            const pageSize = parseInt(req.query.pageSize) || 50;
+            //3 - Retrieve the orders from DB
+            const orderList = await orderService.getAllOrders(page, pageSize);
+            //4 - Return the list
+            return res.status(200).json(orderList);
+        }
+        catch(error){
+            return res.status(500).json({message: error.message});
+        }
     }
     
     async updateOrderById(req, res) {

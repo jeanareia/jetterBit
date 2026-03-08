@@ -6,8 +6,8 @@ class OrderRepository{
 
     /**
      * Saves the order and its items on DB
-     * @param {*} order - The given order to be saved
-     * @param {*} items - Its items
+     * @param {Object} order - The given order to be saved
+     * @param {Object*} items - Its items
      * @returns - Order object already saved
      */
     async createNewOrderWithItems(order, items){
@@ -30,8 +30,8 @@ class OrderRepository{
 
     /**
      * Saves a given Order object on DB
-     * @param {*} order - Order object
-     * @param {*} tx - Prisma transaction
+     * @param {Object} order - Order object
+     * @param {Object} tx - Prisma transaction
      * @returns 
      */
     async createNewOrder(order, tx=prisma){
@@ -43,7 +43,7 @@ class OrderRepository{
 
     /**
      * Retrieves from DB a active specific Order and its Items based on the Order ID
-     * @param {*} orderId - Order Id to search for
+     * @param {string} orderId - Order Id to search for
      * @returns - Order object
      */
     async getOrderById(orderId){
@@ -55,10 +55,36 @@ class OrderRepository{
         });
     }
 
-    async getAllOrders(){
-        return await prisma.order.findMany({
-            where: {status: ObjStatus.ACTIVE}
-        });
+    /**
+     * Retrieves all active orders and its items from DB
+     * @param {number} page - Page to look for
+     * @param {number} pageSize - How many elements per page
+     * @returns - Orders found at the given page
+     */
+    async getAllOrders(page, pageSize){
+        //1 - Defines the index to start looking for
+        const skip = (page-1) * pageSize;
+        //2 - Retrieves the order list and count how many orders got retrieved
+        const [orders, total] = await prisma.$transaction([
+            prisma.order.findMany({
+                where: {status: ObjStatus.ACTIVE}, //Only ACTIVE Orders
+                include: {items: true}, //Includes the Order Items
+                skip: skip, //Wich order DB id to start looking for
+                take: pageSize, //How many items to be retrieved
+                orderBy: {id: 'asc'}
+            }),
+            prisma.order.count({
+                where: {status: ObjStatus.ACTIVE} //counts how many orders got retrieved
+            })
+        ]);
+
+        return {
+            data: orders,
+            total: total,
+            page: page,
+            pageSize: pageSize,
+            totalPages: Math.ceil(total/pageSize)
+        }
     }
 
     async updateOrderById(orderId, order, tx=prisma){

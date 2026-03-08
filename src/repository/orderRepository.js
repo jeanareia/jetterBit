@@ -104,12 +104,19 @@ class OrderRepository{
             //yes ---> update them
             //no ----> Just return STEP 1 Order
             if(items && items.length>0){
-                await itemService.updateItemsBatch(orderId, items, tx);
+                await itemService.updateItemsBatch(orderDb.id, items, tx);
             }
             return orderDb;
         });
     }
 
+    /**
+     * Updates a specific Order based on the OrderId
+     * @param {string} orderId - OrderId to search for
+     * @param {Object} order - Order new properties
+     * @param {Object} tx - Prisma connection
+     * @returns 
+     */
     async updateOrderById(orderId, order, tx=prisma){
         return await tx.order.update({
             where: {orderId: orderId},
@@ -117,6 +124,12 @@ class OrderRepository{
         })
     }
 
+    /**
+     * Set a Order status as INACTIVE
+     * @param {number} orderId - OrderId to search for
+     * @param {Object} tx - Prisma connection
+     * @returns - Order object
+     */
     async deleteOrderById(orderId, tx=prisma){
         return await tx.order.update({
             where: {orderId: orderId},

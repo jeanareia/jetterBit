@@ -1,4 +1,6 @@
 const { z } = require("zod");
+const updateItemDto = require("./updateItemDto")
+
 
 const updateOrderDto = z.object({
     value: z.number().positive().optional(), //No negative numbers allowed

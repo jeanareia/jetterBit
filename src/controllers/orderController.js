@@ -72,11 +72,16 @@ class OrderControlle{
         }
     }
     
-
+    /**
+     * Updates a specific Order based on its orderId (body needed)
+     * @param {Object} req - HTTP request information (body needed)
+     * @param {Object} res - Response
+     * @returns - HTTP status code + Order properties in case of success
+     */
     async updateOrderById(req, res) {
         try{
             const {orderId} = req.params;
-            const dto = updateOrderDto.parte(req.body);
+            const dto = updateOrderDto.parse(req.body);
             const order = await orderService.updateOrderById(orderId, dto);
             return res.status(200).json(order);
         }

@@ -71,6 +71,12 @@ class ItemRepository{
     }
 }
 
+/**
+ * Converts a Item object into Prisma format
+ * @param {Object} items - Item list
+ * @param {number} orderId -OrderId from where these items belongs to
+ * @returns - Item list
+ */
 function itemToPrismaData(items, orderId){
     return items.map(item => ({
         orderId: orderId,
